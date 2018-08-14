@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #box{background: red;width: 100px;height: 100px;position: absolute;top: 0;left: 10px;}
+    </style>
+</head>
+<body>
+<div id="box"></div>
+<script>
+    function getStyle(name,el) {
+        if(name.currentStyle){
+            return name.currentStyle[el];
+        }else {
+            return getComputedStyle(name,false)[el];
+        }
+    }
+
+    function move(box,el,timer,fn) {
+
+        clearInterval(box.timer);
+
+        var json = {};
+
+        var arr = [];
+
+        for(var key in el){
+
+            arr.push(key);
+
+        }
+
+        box.timer = setInterval(function () {
+            for(var i in el){
+
+                var oldSt = parseFloat(getStyle(box,i));
+
+                var car = (el[i] - oldSt)/8;
+
+                car = car > 0 ? Math.ceil(car) : Math.floor(car);
+
+                car = car + oldSt;
+
+                box.style[i] = car + 'px';
+
+                if(car == el[i]){
+
+                    json[i] = true;
+
+                }
+
+            }
+
+            var arr2 = [];
+
+            for(var n in json){
+                arr2.push(json);
+            }
+
+            if(arr.length == arr2.length){
+                clearInterval(box.timer);
+                fn && fn();
+                return;
+            }
+
+        },timer)
+
+    }
+    move(box,{
+        'height': 400,
+        'width' : 300,
+        'marginLeft' : 100
+    },50,function () {
+        move(
+            box,{
+                'height': 100,
+                'width' : 100,
+                'marginLeft' : 10
+            },50
+        )
+    })
+</script>
+</body>
+</html>
